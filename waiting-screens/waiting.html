@@ -23,15 +23,15 @@
             background: transparent;
             color: white;
             overflow: hidden;
-            width: 1920px;
-            height: 1080px;
+            width: 100vw;
+            height: 100vh;
             margin: 0;
             padding: 0;
         }
 
         .waiting-container {
-            width: 1920px;
-            height: 1080px;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -168,9 +168,23 @@
             66%  { content: "..."; }
             100% { content: "."; }
         }
+
+        /* Blurred video background */
+        #videoBg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
+    <video id="videoBg" autoplay muted loop playsinline>
+        <source src="bg_blur_20.mp4" type="video/mp4">
+    </video>
     <div class="waiting-container">
         <div class="announcement">
             <div class="magnifying-glass"></div>
@@ -225,6 +239,21 @@
         // Show first tip immediately, then rotate
         rotateTip();
         setInterval(rotateTip, TIPS_ROTATION_INTERVAL);
+
+        // =============================================
+        // VIDEO BACKGROUND FALLBACK
+        // =============================================
+        const video = document.getElementById('videoBg');
+        video.addEventListener('error', function() {
+            video.style.display = 'none';
+        });
+        // If source doesn't load (no bg_blur.mp4), hide video
+        const source = video.querySelector('source');
+        if (source) {
+            source.addEventListener('error', function() {
+                video.style.display = 'none';
+            });
+        }
     </script>
 </body>
 </html>
